@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicting Marriage Compatibility Using TabTransformer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .poster {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 28px;
+        }
+        h2 {
+            color: #3498db;
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .authors {
+            color: #4b4b4b;
+            font-style: italic;
+        }
+        .chart {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .accuracy-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .accuracy-table th, .accuracy-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .accuracy-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .bias-warning {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+        }
+        .model-arch {
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <div class="header">
+            <h1>Predicting Marriage Compatibility Using TabTransformer</h1>
+            <div class="authors">Mingrui Chen, Yanmi Yu, Yixiao Zhang, Yicen Ye</div>
+        </div>
+
+        <div class="section">
+            <h2>Introduction</h2>
+            <p>Marriage patterns reflect societal structures, and this project analyzes how personal attributes influence matchmaking using NYT wedding data. Inspired by Brown's sociological research and recent advances in tabular deep learning, we apply TabTransformer to predict partner profiles from individual traits—framed as a multi-output classification task (gender, age, education, etc.). This approach could reveal matching biases or power recommendation systems while advancing Transformer applications to social data.</p>
+        </div>
+
+        <div class="section">
+            <h2>Dataset</h2>
+            <p>We use a dataset of 9,160 wedding announcements published in <em>The New York Times</em> between 2012 and 2023. The data was collected via the NYT Article Search API and processed using GPT-4 and rule-based methods to extract structured demographic features for each individual. Annotated and cleaned by Dr. Zhenchao Qian and research scientist Guixing Wei at Brown's Data Science Initiative, the dataset includes over 60 variables such as gender, age (in ranges like 25-30), occupation (standardized by level and field), and education level. </p>
+        </div>
+        
+        <div class="section model-arch" style="display: flex; align-items: flex-start; gap: 20px;">
+            <div style="flex: 1;">
+                <h2>Model Architecture</h2>
+                <p>The ImprovedTabTransformer enhances the standard architecture by</p>
+                <ul style="margin-top: 8px;">
+                    <li>LayerNorm-stabilized feature embeddings → better training stability</li>
+                    <li>CLS token for global context aggregation → richer feature mixing</li>
+                    <li>Deeper output heads with GELU activation → improved multi-task prediction</li>
+                </ul>
+            </div>
+            <div class="chart" style="flex: 2;">
+                <img src="/Users/yanmiyu/Desktop/1470_final/DL-Marriage-Prediction/poster/tabtransformer image.png" alt="Model Architecture Diagram" style="max-width: 100%; height: auto; margin-top: -130px;">
+            </div>
+        </div>
+        
+
+        <div class="section">
+            <h2>Accuracy Results</h2>
+            <table class="accuracy-table" style="width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.2; margin-top: 4px;">
+                <tr>
+                    <th style="text-align: left; padding: 4px; border-bottom: 1px solid #ddd;">Attribute</th>
+                    <th style="text-align: left; padding: 4px; border-bottom: 1px solid #ddd;">Accuracy</th>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;">Gender</td>
+                    <td style="padding: 4px;">83.6%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;">School Tier</td>
+                    <td style="padding: 4px;">53.4%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;">Education Level</td>
+                    <td style="padding: 4px;">43.8%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;">Occupation</td>
+                    <td style="padding: 4px;">36.6%</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;">Age Group</td>
+                    <td style="padding: 4px;">21.2%</td>
+                </tr>
+            </table>
+            
+            <table class="prediction-table" style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; line-height: 1.2;">
+                <tr>
+                    <th style="text-align: left; padding: 4px; border-bottom: 1px solid #ddd;">Attribute</th>
+                    <th style="text-align: left; padding: 4px; border-bottom: 1px solid #ddd;">Input</th>
+                    <th style="text-align: left; padding: 4px; border-bottom: 1px solid #ddd;">Predicted Partner</th>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;"><strong>Gender</strong></td>
+                    <td style="padding: 4px;">Female</td>
+                    <td style="padding: 4px;">Male</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;"><strong>Age / Age Group</strong></td>
+                    <td style="padding: 4px;">28</td>
+                    <td style="padding: 4px;">31</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;"><strong>School Tier</strong></td>
+                    <td style="padding: 4px;">Ivy League / Elite Private</td>
+                    <td style="padding: 4px;">Ivy League / Elite Private</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;"><strong>Education Level</strong></td>
+                    <td style="padding: 4px;">S2</td>
+                    <td style="padding: 4px;">S3</td>
+                </tr>
+                <tr>
+                    <td style="padding: 4px;"><strong>Occupation / Field of Study</strong></td>
+                    <td style="padding: 4px;">Business and Financial Occupations</td>
+                    <td style="padding: 4px;">Business and Financial Occupations</td>
+                </tr>
+            </table>
+            
+        </div>
+
+        <div class="section bias-warning">
+            <h2>Bias Discussion</h2>
+            <p>Our project lies at the intersection of sociology, relationships, and data modeling. Matchmaking and partner preferences are deeply tied to societal structures like class, race, education, and geography. Using machine learning to model romantic compatibility risks reinforcing existing inequalities: if historical patterns reflect homogamy (marrying within one’s social group), the model may reproduce rather than challenge these biases. Additionally, applying such models to real-world matchmaking tools could lead to algorithmic steering without critical reflection. Key concerns:</p>
+            <ul>
+                <li>Self-selection bias: Only couples who choose to submit announcements (and are aware of the opportunity) are included.</li>
+                <li>Editorial bias: NYT editors curate published announcements, favoring those with elite education, prestigious professions, and East Coast ties. </li>
+            </ul>
+        </div>
+
+        <!-- <div class="section" style="grid-column: span 2;">
+            <h2>Future Work</h2>
+            <div style="display: flex; gap: 20px;">
+                <div>
+                    <h3>Technical</h3>
+                    <ul>
+                        <li>Attention visualization</li>
+                        <li>Bias mitigation techniques</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Sociological</h3>
+                    <ul>
+                        <li>Compare with non-elite datasets</li>
+                        <li>Temporal shift analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</body>
+</html>
