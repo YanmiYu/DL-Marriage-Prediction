@@ -61,12 +61,16 @@ class ImprovedTabTransformer(nn.Module):
     def __init__(self, category_sizes, dim, output_sizes):
         super().__init__()
         # Add feature-wise projections
-        self.embeddings = nn.ModuleList([
-            nn.Sequential(
-                nn.Embedding(size, dim),
-                nn.LayerNorm(dim)
-            ) for size in category_sizes
-        ])
+
+        # self.embeddings = nn.ModuleList([
+        #   nn.Sequential(
+        #        nn.Embedding(size, dim),
+        #        nn.LayerNorm(dim)
+        #    ) for size in category_sizes
+        #])
+
+        self.embeddings = nn.ModuleList([nn.Embedding(size, dim) for size in category_sizes])
+        self.column_embeddings = nn.Parameter(torch.randn(len(category_sizes), dim))
 
         # Add learnable CLS token
         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
@@ -86,15 +90,19 @@ class ImprovedTabTransformer(nn.Module):
         self.heads = nn.ModuleList()
         for out_size in output_sizes:
             head = nn.Sequential(
-                nn.Linear(dim, dim//2),
-                nn.GELU(),
-                nn.LayerNorm(dim//2),
-                nn.Linear(dim//2, out_size)
+                    nn.Linear(dim, dim),         
+                    nn.GELU(),
+                    nn.LayerNorm(dim),
+                    nn.Linear(dim, dim//2),
+                    nn.GELU(),
+                    nn.LayerNorm(dim//2),
+                    nn.Linear(dim//2, out_size)
             )
             self.heads.append(head)
 
     def forward(self, x):
-        x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
+        # x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
+        x_emb = [self.embeddings[i](x[:, i]) + self.column_embeddings[i] for i in range(len(self.embeddings))]
         x_emb = torch.stack(x_emb, dim=1)  # [batch, features, dim]
 
         # Add CLS token
