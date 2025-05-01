@@ -25,43 +25,20 @@ to predict similar attributes for a potential partner.
 ## Data
 
 ### Source
-The dataset is derived from **9,160 New York Times wedding announcements** (2012–2023).
-
-### Collection Methodology
-1. **API Collection**:
+The dataset is derived from **9,160 New York Times wedding announcements** (2013–2023).
    - Used NYT Article Search API
    - Search parameters:
      - Keywords: "wedding", "vow", "marriage"
      - Metadata subsection: "Fashion & Style"
-     - Date range: January 2012 - December 2023
-
-2. **Standardization Pipeline**:
-   - **GPT-4 Batch Processing**:
-     - Extracted core variables:
-       - Age
-       - Educational institution
-       - Occupation
-     - Normalized occupations into:
-       - 6 hierarchical levels(internship, entry level, associate, mid-senior level, director, executive)
-       - 25 standardized fields(according to Labor of Bureau)
-
-   - **Education Categorization**:
-       - Ivy League, Top 50 Private, Top 50 Liberal Arts, Top 30 Public, Others
-
-   - **Age Processing**:
-     - Binned into 5-year intervals:
-       - 20–24
-       - 25–29 
-       - [...] 
-       - 60+
+     - Date range: January 2013 - December 2023
 
 ### Dataset Characteristics
 | Feature Type       | Categories/Values | Processing Method |
 |--------------------|-------------------|-------------------|
-| **Demographics**   | Gender, Age       | Direct extraction |
+| **Demographics**   | Gender, Age       | GPT 3.5 batch Direct extraction |
 | **Education**      | 5 tiers           | Keyword matching  |
-| **Occupation**     | 25 fields         | GPT-4 clustering  |
-| **Relationships**  | Meeting context   | Manual annotation |
+| **Occupation**     | 25 fields         | GPT-40 mini clustering  |
+| **Relationships**  | Meeting context   | eyword matching  |
 
 
 ## Model Architecture
