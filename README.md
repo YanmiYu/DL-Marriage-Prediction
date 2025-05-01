@@ -37,7 +37,7 @@ The dataset is derived from **9,160 New York Times wedding announcements** (2013
 |--------------------|-------------------|-------------------|
 | **Demographics**   | Gender, Age       | GPT 3.5 batch Direct extraction |
 | **Education**      | 5 tiers           | Keyword matching  |
-| **Occupation**     | 25 fields         | GPT-40 mini clustering  |
+| **Occupation**     | 25 fields         | GPT-4o mini clustering  |
 | **Relationships**  | Meeting context   | eyword matching  |
 
 
@@ -75,7 +75,7 @@ print(f"Age Group:      {predictions['target_age_bin']}")
 print(f"School Category: {predictions['target_school_category']}") 
 print(f"Education Level: {predictions['target_level_id']}")
 print(f"Field of Study:  {predictions['target_field']}")
-
+```
 
 ## Requirements
 
