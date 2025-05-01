@@ -1,48 +1,79 @@
 # DL-Marriage-Prediction
 
-A deep learning project that predicts characteristics of potential marriage partners based on personal attributes using data from wedding announcements.
+**Authors**: Mingrui Chen, Yanmi Yu, Yixiao Zhang, Yicen Ye  
+**Institution**: Brown University, CSCI 1470 Deep Learning  
+**Date**: April 30, 2025
+
 
 ## Project Overview
 
-This project uses deep learning techniques to predict the characteristics of a person's potential marriage partner based on their own demographic and educational information. The model takes inputs such as:
+This study analyzes how demographic traits influence partner selection by predicting ideal match attributes from individual profiles. Using the TabTransformer architecture on NYT wedding data, we model relationships between features like age, education, and occupation through multi-label classification.
+
+Marriage patterns reveal societal structures and biases. Our work extends sociological research while enabling practical applications—from bias auditing to improving recommendation systems—and advances Transformer methods for social data analysis.
+
+The model takes inputs such as:
 
 - Gender
 - Age group
-- Education level
+- Education level(Undergraduate VS graduate)
 - School category
-- Field of study
+- Field of occupation
+- level of the job
 
 to predict similar attributes for a potential partner.
 
 ## Data
 
-The dataset is derived from wedding announcements, primarily from The New York Times. It includes information about:
+### Source
+The dataset is derived from **9,160 New York Times wedding announcements** (2012–2023).
 
-- Partner demographics (gender, age)
-- Educational background (school category, education level)
-- Professional information (field of study/occupation)
-- How couples first met
+### Collection Methodology
+1. **API Collection**:
+   - Used NYT Article Search API
+   - Search parameters:
+     - Keywords: "wedding", "vow", "marriage"
+     - Metadata subsection: "Fashion & Style"
+     - Date range: January 2012 - December 2023
 
-## Project Structure
-src/
-├── EDA.ipynb # Exploratory Data Analysis
-├── preprocess_data.ipynb # Data preprocessing
-├── 0_archive_model_dev.ipynb # Archived model development
-├── 1_model_dev.ipynb # Model development
-├── 2_model_dev.ipynb
-├── 3_model_dev.ipynb
-└── evaluation_report.txt # Performance metrics
+2. **Standardization Pipeline**:
+   - **GPT-4 Batch Processing**:
+     - Extracted core variables:
+       - Age
+       - Educational institution
+       - Occupation
+     - Normalized occupations into:
+       - 6 hierarchical levels(internship, entry level, associate, mid-senior level, director, executive)
+       - 25 standardized fields(according to Labor of Bureau)
+
+   - **Education Categorization**:
+       - Ivy League, Top 50 Private, Top 50 Liberal Arts, Top 30 Public, Others
+
+   - **Age Processing**:
+     - Binned into 5-year intervals:
+       - 20–24
+       - 25–29 
+       - [...] 
+       - 60+
+
+### Dataset Characteristics
+| Feature Type       | Categories/Values | Processing Method |
+|--------------------|-------------------|-------------------|
+| **Demographics**   | Gender, Age       | Direct extraction |
+| **Education**      | 5 tiers           | Keyword matching  |
+| **Occupation**     | 25 fields         | GPT-4 clustering  |
+| **Relationships**  | Meeting context   | Manual annotation |
 
 
-## Model
+## Model Architecture
 
-The project implements a neural network model that predicts multiple attributes:
+Our **ImprovedTabTransformer** architecture combines feature embeddings with transformer-based processing:
 
-1. Gender
-2. Age group
-3. School category (Ivy League, Top 30 Public, etc.)
-4. Education level
-5. Field of study/occupation
+Key components:
+- **Feature Embeddings**: Each categorical feature embedded into shared space with LayerNorm
+- **Transformer Core**:
+  - 4-layer encoder with 8 attention heads
+  - 256-dimensional feedforward networks
+- **Prediction Heads**: Task-specific MLPs with GELU activation
 
 ## Example Usage
 
@@ -69,21 +100,14 @@ print(f"Education Level: {predictions['target_level_id']}")
 print(f"Field of Study:  {predictions['target_field']}")
 
 
-
-Model Performance
-
-Prediction Target	Accuracy
-Gender	~84%
-Age group	~63%
-School category	~51%
-Education level	~46%
-Field of study	~35%
-Detailed evaluation metrics can be found in src/evaluation_report.txt.
-
-Requirements
+## Requirements
 
 Python 3.x
 PyTorch
 Pandas
 NumPy
 Jupyter Notebook
+
+## Acknowledgements
+[1] Raw dataset collected by Dr. Zhenchao Qian, Dr. Guixing Wei and Yanmi Yu(Brown University).
+[2] Huang, Xin, et al. "TabTransformer: Tabular Data Modeling Using Contextual Embeddings." arXiv, 11 Dec. 2020, https://arxiv.org/abs/2012.06678
