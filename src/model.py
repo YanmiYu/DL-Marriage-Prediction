@@ -57,117 +57,61 @@ class TabTransformer(nn.Module):
         return [head(x_flat) for head in self.heads]
     
 
-# class ImprovedTabTransformer(nn.Module):
-#     def __init__(self, category_sizes, dim, output_sizes):
-#         super().__init__()
-#         # Add feature-wise projections
-
-#         # self.embeddings = nn.ModuleList([
-#         #   nn.Sequential(
-#         #        nn.Embedding(size, dim),
-#         #        nn.LayerNorm(dim)
-#         #    ) for size in category_sizes
-#         #])
-
-#         self.embeddings = nn.ModuleList([nn.Embedding(size, dim) for size in category_sizes])
-#         self.column_embeddings = nn.Parameter(torch.randn(len(category_sizes), dim))
-
-#         # Add learnable CLS token
-#         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
-
-#         self.transformer = nn.TransformerEncoder(
-#             encoder_layer=nn.TransformerEncoderLayer(
-#                 d_model=dim,
-#                 nhead=8,  # More attention heads
-#                 dim_feedforward=256,
-#                 dropout=0.4,
-#                 batch_first=True
-#             ),
-#             num_layers=4
-#         )
-
-#         # Deeper output heads
-#         self.heads = nn.ModuleList()
-#         for out_size in output_sizes:
-#             head = nn.Sequential(
-#                     nn.Linear(dim, dim),         
-#                     nn.GELU(),
-#                     nn.LayerNorm(dim),
-#                     nn.Linear(dim, dim//2),
-#                     nn.GELU(),
-#                     nn.LayerNorm(dim//2),
-#                     nn.Linear(dim//2, out_size)
-#             )
-#             self.heads.append(head)
-
-#     def forward(self, x):
-#         # x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
-#         x_emb = [self.embeddings[i](x[:, i]) + self.column_embeddings[i] for i in range(len(self.embeddings))]
-#         x_emb = torch.stack(x_emb, dim=1)  # [batch, features, dim]
-
-#         # Add CLS token
-#         cls_tokens = self.cls_token.expand(x_emb.size(0), -1, -1)
-#         x_emb = torch.cat((cls_tokens, x_emb), dim=1)
-
-#         x_trans = self.transformer(x_emb)
-
-#         # Use CLS token for prediction
-#         cls_output = x_trans[:, 0]
-
-#         return [head(cls_output) for head in self.heads]
-    
-
 class ImprovedTabTransformer(nn.Module):
-    def __init__(self, category_sizes, dim, output_sizes, nhead=8, num_layers=4, ff_dim=256):
+    def __init__(self, category_sizes, dim, output_sizes):
         super().__init__()
-        # Feature-specific embedding dimensions
-        self.embeddings = nn.ModuleList([
-            nn.Embedding(size, min(dim, size//2 + 4))  # Adaptive dimension
-            for size in category_sizes
-        ])
-        
-        # Project all embeddings to common dimension
-        self.proj = nn.ModuleList([
-            nn.Linear(min(dim, size//2 + 4), dim)
-            for size in category_sizes
-        ])
-        
+        # Add feature-wise projections
+
+        # self.embeddings = nn.ModuleList([
+        #   nn.Sequential(
+        #        nn.Embedding(size, dim),
+        #        nn.LayerNorm(dim)
+        #    ) for size in category_sizes
+        #])
+
+        self.embeddings = nn.ModuleList([nn.Embedding(size, dim) for size in category_sizes])
         self.column_embeddings = nn.Parameter(torch.randn(len(category_sizes), dim))
+
+        # Add learnable CLS token
         self.cls_token = nn.Parameter(torch.randn(1, 1, dim))
-        
-        # More flexible transformer
+
         self.transformer = nn.TransformerEncoder(
             encoder_layer=nn.TransformerEncoderLayer(
                 d_model=dim,
-                nhead=nhead,
-                dim_feedforward=ff_dim,
-                dropout=0.3,
+                nhead=8,  # More attention heads
+                dim_feedforward=256,
+                dropout=0.4,
                 batch_first=True
             ),
-            num_layers=num_layers
+            num_layers=4
         )
-        
-        # Adaptive output heads
+
+        # Deeper output heads
         self.heads = nn.ModuleList()
         for out_size in output_sizes:
             head = nn.Sequential(
-                nn.Linear(dim, dim*2),
-                nn.SiLU(),
-                nn.LayerNorm(dim*2),
-                nn.Dropout(0.2),
-                nn.Linear(dim*2, out_size)
+                    nn.Linear(dim, dim),         
+                    nn.GELU(),
+                    nn.LayerNorm(dim),
+                    nn.Linear(dim, dim//2),
+                    nn.GELU(),
+                    nn.LayerNorm(dim//2),
+                    nn.Linear(dim//2, out_size)
             )
             self.heads.append(head)
-    
+
     def forward(self, x):
-        x_emb = [proj(emb(x[:, i])) for i, (emb, proj) in enumerate(zip(self.embeddings, self.proj))]
-        x_emb = torch.stack(x_emb, dim=1)
-        x_emb = x_emb + self.column_embeddings
-        
+        # x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
+        x_emb = [self.embeddings[i](x[:, i]) + self.column_embeddings[i] for i in range(len(self.embeddings))]
+        x_emb = torch.stack(x_emb, dim=1)  # [batch, features, dim]
+
+        # Add CLS token
         cls_tokens = self.cls_token.expand(x_emb.size(0), -1, -1)
         x_emb = torch.cat((cls_tokens, x_emb), dim=1)
-        
+
         x_trans = self.transformer(x_emb)
+
+        # Use CLS token for prediction
         cls_output = x_trans[:, 0]
-        
+
         return [head(cls_output) for head in self.heads]
