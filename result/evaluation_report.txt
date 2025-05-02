@@ -2,78 +2,78 @@
 Evaluation for target_gender:
               precision    recall  f1-score   support
 
-        Male       0.85      0.91      0.88      1682
-      Female       0.83      0.87      0.85      1693
+        Male       0.83      0.92      0.88      1682
+      Female       0.84      0.87      0.85      1693
    Nonbinary       0.00      0.00      0.00         2
-     Unknown       0.61      0.21      0.31       286
+     Unknown       0.88      0.08      0.15       286
 
-    accuracy                           0.84      3663
-   macro avg       0.58      0.50      0.51      3663
-weighted avg       0.82      0.84      0.82      3663
+    accuracy                           0.83      3663
+   macro avg       0.64      0.47      0.47      3663
+weighted avg       0.84      0.83      0.81      3663
 
 Evaluation for target_age_bin:
               precision    recall  f1-score   support
 
-       25-29       0.71      0.63      0.67      1129
-       30-34       0.59      0.76      0.66      1455
-       35-39       0.51      0.27      0.35       486
+       25-29       0.70      0.67      0.69      1129
+       30-34       0.63      0.66      0.65      1455
+       35-39       0.41      0.48      0.44       486
        40-44       0.00      0.00      0.00       163
-     Unknown       0.71      0.85      0.77       430
+     Unknown       0.75      0.81      0.78       430
 
     accuracy                           0.63      3663
-   macro avg       0.50      0.50      0.49      3663
-weighted avg       0.60      0.63      0.61      3663
+   macro avg       0.50      0.53      0.51      3663
+weighted avg       0.61      0.63      0.62      3663
 
 Evaluation for target_school_category:
                           precision    recall  f1-score   support
 
-              Ivy League       0.59      0.16      0.26       776
-    No College Mentioned       0.56      0.57      0.56       300
-          Other Colleges       0.51      0.84      0.63      1623
-           Top 30 Public       0.46      0.09      0.15       174
-Top 50 Private (Non-Ivy)       0.48      0.25      0.33       790
+              Ivy League       0.64      0.08      0.15       776
+    No College Mentioned       0.57      0.56      0.56       300
+          Other Colleges       0.48      0.92      0.63      1623
+           Top 30 Public       0.00      0.00      0.00       174
+Top 50 Private (Non-Ivy)       0.53      0.12      0.19       790
 
-                accuracy                           0.51      3663
-               macro avg       0.52      0.38      0.39      3663
-            weighted avg       0.52      0.51      0.46      3663
+                accuracy                           0.50      3663
+               macro avg       0.45      0.34      0.31      3663
+            weighted avg       0.51      0.50      0.40      3663
 
 Evaluation for target_level_id:
               precision    recall  f1-score   support
 
-          S1       0.59      0.07      0.12       231
+          S1       0.84      0.07      0.13       231
           S2       0.00      0.00      0.00        35
           S3       0.00      0.00      0.00       536
-          S4       0.46      0.71      0.56      1487
-          S5       0.45      0.46      0.45      1182
+          S4       0.44      0.81      0.57      1487
+          S5       0.47      0.30      0.37      1182
           S6       0.00      0.00      0.00        44
          nan       0.56      0.51      0.53       148
 
-    accuracy                           0.46      3663
-   macro avg       0.30      0.25      0.24      3663
-weighted avg       0.39      0.46      0.40      3663
+    accuracy                           0.45      3663
+   macro avg       0.33      0.24      0.23      3663
+weighted avg       0.40      0.45      0.38      3663
 
 Evaluation for target_field:
                                                    precision    recall  f1-score   support
 
-         Architecture and Engineering Occupations       0.53      0.18      0.27       111
-                      Arts and Design Occupations       0.24      0.32      0.27       195
+         Architecture and Engineering Occupations       0.62      0.18      0.28       111
+                      Arts and Design Occupations       0.26      0.28      0.27       195
         Building and Grounds Cleaning Occupations       0.00      0.00      0.00         2
-               Business and Financial Occupations       0.35      0.77      0.48      1085
+               Business and Financial Occupations       0.37      0.76      0.49      1085
          Community and Social Service Occupations       0.00      0.00      0.00       146
   Computer and Information Technology Occupations       0.00      0.00      0.00       114
           Construction and Extraction Occupations       0.00      0.00      0.00         2
-  Educational Instruction and Library Occupations       0.29      0.04      0.07       244
+  Educational Instruction and Library Occupations       0.15      0.02      0.04       244
              Entertainment and Sports Occupations       0.00      0.00      0.00        48
                                                F0       0.00      0.00      0.00         1
        Farming, Fishing, and Forestry Occupations       0.00      0.00      0.00         3
          Food Preparation and Serving Occupations       0.00      0.00      0.00        11
-                           Healthcare Occupations       0.36      0.37      0.36       336
+                           Healthcare Occupations       0.31      0.43      0.36       336
 Installation, Maintenance, and Repair Occupations       0.00      0.00      0.00         2
                                 Legal Occupations       0.34      0.33      0.34       448
    Life, Physical, and Social Science Occupations       0.00      0.00      0.00        77
                            Management Occupations       0.00      0.00      0.00       258
                                  Math Occupations       0.00      0.00      0.00         4
-              Media and Communication Occupations       0.37      0.11      0.17       253
+              Media and Communication Occupations       0.35      0.15      0.21       253
                                          Military       0.00      0.00      0.00        16
     Office and Administrative Support Occupations       0.00      0.00      0.00        67
             Personal Care and Service Occupations       0.00      0.00      0.00         3
@@ -83,6 +83,6 @@ Installation, Maintenance, and Repair Occupations       0.00      0.00      0.00
    Transportation and Material Moving Occupations       0.00      0.00      0.00         4
                                               nan       0.56      0.51      0.53       148
 
-                                         accuracy                           0.35      3663
+                                         accuracy                           0.36      3663
                                         macro avg       0.11      0.10      0.09      3663
-                                     weighted avg       0.28      0.35      0.28      3663
+                                     weighted avg       0.27      0.36      0.28      3663

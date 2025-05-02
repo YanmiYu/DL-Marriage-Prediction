@@ -3,12 +3,6 @@ import torch.nn as nn
 import torch.optim as optim
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-from torch.utils.data import DataLoader, TensorDataset
-import matplotlib.pyplot as plt
-import os
-
 
 class TabTransformer(nn.Module):
     def __init__(self, category_sizes, dim, output_sizes):
@@ -91,18 +85,18 @@ class ImprovedTabTransformer(nn.Module):
         for out_size in output_sizes:
             head = nn.Sequential(
                     nn.Linear(dim, dim),         
-                    nn.GELU(),
+                    nn.ReLU(),
                     nn.LayerNorm(dim),
                     nn.Linear(dim, dim//2),
-                    nn.GELU(),
+                    nn.ReLU(),
                     nn.LayerNorm(dim//2),
                     nn.Linear(dim//2, out_size)
             )
             self.heads.append(head)
 
     def forward(self, x):
-        # x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)]
-        x_emb = [self.embeddings[i](x[:, i]) + self.column_embeddings[i] for i in range(len(self.embeddings))]
+        # x_emb = [emb(x[:, i]) for i, emb in enumerate(self.embeddings)] <- this doesn't add the column embeddings
+        x_emb = [self.embeddings[i](x[:, i]) + self.column_embeddings[i] for i in range(len(self.embeddings))] ## <- this adds the column embeddings
         x_emb = torch.stack(x_emb, dim=1)  # [batch, features, dim]
 
         # Add CLS token
